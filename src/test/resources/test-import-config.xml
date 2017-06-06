@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workbook>
+    <worksheet name="Sheet1">
+        <section startRow="0" endRow="1">
+            <mapping cell="B1">testImport.employee.name</mapping>
+            <mapping cell="B2">testImport.employee.birthday</mapping>
+            <mapping cell="D2">testImport.employee.phone</mapping>
+        </section>
+        <section startRow="2" endRow="3"></section>
+        <loop startRow="4" endRow="4" items="testImport.employees" var="employee" varType="com.dazzlingstreak.domain.Employee">
+            <section startRow="4" endRow="4">
+                <mapping cell="A5">employee.name</mapping>
+                <mapping cell="B5">employee.birthday</mapping>
+                <mapping cell="C5">employee.phone</mapping>
+            </section>
+            <loopbreakcondition>
+                <rowcheck offset="0">
+                    <cellcheck offset="0"></cellcheck>
+                </rowcheck>
+            </loopbreakcondition>
+        </loop>
+    </worksheet>
+</workbook>
