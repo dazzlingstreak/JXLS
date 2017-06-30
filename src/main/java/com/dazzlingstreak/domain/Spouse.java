@@ -1,12 +1,10 @@
 package com.dazzlingstreak.domain;
 
-import java.util.Date;
-
 /**
- * 雇员
+ * 配偶
  * @author huangdawei
  */
-public class Employee {
+public class Spouse {
 
     /**
      * 姓名
@@ -14,19 +12,20 @@ public class Employee {
     private String name;
 
     /**
-     * 身份证号
+     * 身份证
      */
     private String idCard;
 
     /**
-     * 手机号
+     * 联系电话
      */
     private String phone;
 
-    /**
-     * 薪水
-     */
-    private double salary;
+    public Spouse(String name, String idCard, String phone) {
+        this.name = name;
+        this.idCard = idCard;
+        this.phone = phone;
+    }
 
     public String getName() {
         return name;
@@ -50,13 +49,5 @@ public class Employee {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(double salary) {
-        this.salary = salary;
     }
 }

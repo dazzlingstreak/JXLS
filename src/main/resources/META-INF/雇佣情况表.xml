@@ -1,0 +1,19 @@
+<xls>
+    <!--名称是Template的sheet页,A1:D11作为第一个Area,只有在Area区域中的信息块,JXLS才会处理-->
+    <area ref="Template!A1:D11">
+        <!--如果employer的婚姻情况是已婚,才显示配偶栏目.-->
+        <if condition="employer.marriage == 2" ref="Template!A6:D11">
+            <area ref="Template!A6:D11">
+                <!--雇员信息是列表数据，需要用到each遍历填充数据-->
+                <each items="employees" var="employee" ref="Template!A11:D11">
+                    <area ref="Template!A11:D11"/>
+                </each>
+            </area>
+            <area ref="Template!A9:D11">
+                <each items="employees" var="employee" ref="Template!A11:D11">
+                    <area ref="Template!A11:D11"/>
+                </each>
+            </area>
+        </if>
+    </area>
+</xls>

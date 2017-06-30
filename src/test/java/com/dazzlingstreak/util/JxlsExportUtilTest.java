@@ -1,50 +1,123 @@
 package com.dazzlingstreak.util;
 
 import com.dazzlingstreak.domain.Employee;
+import com.dazzlingstreak.domain.Employer;
+import com.dazzlingstreak.domain.Spouse;
+import com.dazzlingstreak.enums.GenderEnum;
+import com.dazzlingstreak.enums.MarriageEnum;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * Created by Administrator on 2017/6/6.
+ * JxlsExportUtilTest
+ * @author huangdawei
  */
 public class JxlsExportUtilTest {
 
     @Test
-    public void test() throws IOException {
-        OutputStream outputStream = new FileOutputStream("D:\\export.xlsx");
-        Map<String,Object> map = new HashMap<>();
+    public void testExportExcel() throws IOException {
+        Employer employer = new Employer();
+        employer.setName("Employer");
+        employer.setPhone("Employer-phone");
+        employer.setIdCard("Employer-idcard");
+        employer.setBirthday(parseStringToDate("1999-10-01","yyyy-MM-dd"));
+        employer.setGender(GenderEnum.MALE.getCode());
+//        employer.setMarriage(MarriageEnum.UNMARRIED.getCode());  //非已婚情况【隐藏】配偶信息
+        employer.setMarriage(MarriageEnum.MARRIED.getCode()); //已婚情况【显示】配偶信息
+        Spouse spouse = new Spouse("Employer-spouse","Employer-spouse-idcard","Employer-spouse-phone");
+        employer.setSpouse(spouse);
 
-        List<Employee> employees = new ArrayList();
-
+        List<Employee> employeeList = new ArrayList<>();
         Employee employee1 = new Employee();
-        employee1.setName("明教");
-        employee1.setMarriage(true);
-        employee1.setBirthday(Date.from(LocalDate.parse("2001-02-15").atStartOfDay().toInstant(ZoneOffset.UTC)));
-        employee1.setPhone("18667048855");
-        employees.add(employee1);
+        employee1.setName("Employee-01");
+        employee1.setIdCard("idcard-01");
+        employee1.setPhone("phone-01");
+        employee1.setSalary(5000.59);
 
         Employee employee2 = new Employee();
-        employee2.setName("藏剑");
-        employee2.setMarriage(false);
-        employee2.setBirthday(Date.from(LocalDate.parse("2000-01-14").atStartOfDay().toInstant(ZoneOffset.UTC)));
-        employee2.setPhone("18667048855");
-        employees.add(employee2);
+        employee2.setName("Employee-02");
+        employee2.setIdCard("idcard-02");
+        employee2.setPhone("phone-02");
+        employee2.setSalary(3000.19);
 
         Employee employee3 = new Employee();
-        employee3.setName("纯阳");
-        employee3.setMarriage(false);
-        employee3.setBirthday(Date.from(LocalDate.parse("1998-02-24").atStartOfDay().toInstant(ZoneOffset.UTC)));
-        employee3.setPhone("18667048855");
-        employees.add(employee3);
+        employee3.setName("Employee-03");
+        employee3.setIdCard("idcard-03");
+        employee3.setPhone("phone-03");
+        employee3.setSalary(3000);
 
-        map.put("employees",employees);
-        JxlsExportUtil.exportExcelFile(map,"test-export-template.xlsx",outputStream);
+        employeeList.add(employee1);
+        employeeList.add(employee2);
+        employeeList.add(employee3);
+
+        Map<String,Object> model = new HashMap<>();
+        model.put("employer",employer);
+        model.put("employees",employeeList);
+
+        //采用临时文件作为输出路径,路径为：C:\Users\Administrator\AppData\Local\Temp
+        File exportFile = File.createTempFile("EmployInfoExport",".xlsx");
+        JxlsExportUtil.exportExcel("META-INF/雇佣情况表.xlsx","META-INF/雇佣情况表.xml",exportFile,model);
     }
 
+    @Test
+    public void testExportExcelWithoutXml() throws IOException {
+        Employer employer = new Employer();
+        employer.setName("Employer");
+        employer.setPhone("Employer-phone");
+        employer.setIdCard("Employer-idcard");
+        employer.setBirthday(parseStringToDate("1999-10-01","yyyy-MM-dd"));
+        employer.setGender(GenderEnum.MALE.getCode());
+        employer.setMarriage(MarriageEnum.UNMARRIED.getCode());  //非已婚情况【隐藏】配偶信息
+//        employer.setMarriage(MarriageEnum.MARRIED.getCode()); //已婚情况【显示】配偶信息
+        Spouse spouse = new Spouse("Employer-spouse","Employer-spouse-idcard","Employer-spouse-phone");
+        employer.setSpouse(spouse);
+
+        List<Employee> employeeList = new ArrayList<>();
+        Employee employee1 = new Employee();
+        employee1.setName("Employee-01");
+        employee1.setIdCard("idcard-01");
+        employee1.setPhone("phone-01");
+        employee1.setSalary(5000.59);
+
+        Employee employee2 = new Employee();
+        employee2.setName("Employee-02");
+        employee2.setIdCard("idcard-02");
+        employee2.setPhone("phone-02");
+        employee2.setSalary(3000.19);
+
+        Employee employee3 = new Employee();
+        employee3.setName("Employee-03");
+        employee3.setIdCard("idcard-03");
+        employee3.setPhone("phone-03");
+        employee3.setSalary(3000);
+
+        employeeList.add(employee1);
+        employeeList.add(employee2);
+        employeeList.add(employee3);
+
+        Map<String,Object> model = new HashMap<>();
+        model.put("employer",employer);
+        model.put("employees",employeeList);
+
+        //采用临时文件作为输出路径,路径为：C:\Users\Administrator\AppData\Local\Temp
+        File exportFile = File.createTempFile("EmployInfoExport",".xlsx");
+        JxlsExportUtil.exportExcel("META-INF/雇佣情况表_excel_markup.xlsx",exportFile,model);
+
+//       remark:此处列表中的数据序号问题，需要找方案解决下，推荐使用xml配置的方案进行导出，灵活性和扩展性高
+    }
+
+
+    private Date parseStringToDate(String dateString,String format){
+        Instant instant = LocalDate.parse(dateString, DateTimeFormatter.ofPattern(format)).atStartOfDay().toInstant(ZoneOffset.UTC);
+        return Date.from(instant);
+    }
 }
