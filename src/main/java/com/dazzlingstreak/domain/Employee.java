@@ -28,6 +28,11 @@ public class Employee {
      */
     private double salary;
 
+    /**
+     * 生日
+     */
+    private String birthday;
+
     public String getName() {
         return name;
     }
@@ -58,5 +63,13 @@ public class Employee {
 
     public void setSalary(double salary) {
         this.salary = salary;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }
